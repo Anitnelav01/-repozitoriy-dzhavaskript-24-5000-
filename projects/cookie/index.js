@@ -33,7 +33,7 @@ import './cookie.html';
    const newDiv = document.createElement('div');
    homeworkContainer.appendChild(newDiv);
  */
-const homeworkContainer = document.querySelector('#app');
+const homeworkContainer = document.querySelector('#homework-container');
 // текстовое поле для фильтрации cookie
 const filterNameInput = homeworkContainer.querySelector('#filter-name-input');
 // текстовое поле с именем cookie
@@ -45,65 +45,36 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
+const cookiesMap = getCookies();
+
+let filterVal = '';
+
 updateTable();
 
-function updateTable() {
-  const filterVal = filterNameInput.value ? filterNameInput.value : false;
-
-  listTable.innerHTML = '';
-  const cookies = document.cookie.split('; ').reduce((prev, current) => {
+function getCookies() {
+  return document.cookie.split('; ').reduce((prev, current) => {
     const [name, value] = current.split('=');
     prev[name] = value;
     return prev;
-  }, {});
-
-  for (const key in cookies) {
-    if (
-      filterVal !== false &&
-      key.includes(filterVal) === false &&
-      cookies[key] !== undefined &&
-      cookies[key].includes(filterVal) === false
-    ) {
-      continue;
-    }
-
-    const tdName = document.createElement('td');
-    const tdValue = document.createElement('td');
-    const tdDelete = document.createElement('td');
-    const buttonDelete = document.createElement('button');
-
-    const tr = document.createElement('tr');
-
-    tdName.textContent = key;
-    tr.appendChild(tdName);
-
-    tdValue.textContent = cookies[key];
-    tr.appendChild(tdValue);
-
-    buttonDelete.dataset.role = 'remove-cookie';
-    buttonDelete.dataset.cookieName = key;
-    buttonDelete.textContent = 'Удалить';
-    tdDelete.appendChild(buttonDelete);
-    tr.appendChild(tdDelete);
-
-    listTable.appendChild(tr);
-  }
+  }, new Map());
 }
 
 filterNameInput.addEventListener('input', function () {
+  filterVal = this.value;
   updateTable();
 });
 
 addButton.addEventListener('click', () => {
-  const valueName = addNameInput.value;
-  const valueVal = addValueInput.value;
+  const name = encodeURIComponent(addNameInput.value.trim());
+  const value = encodeURIComponent(addValueInput.value.trim());
 
-  if (!valueName && !valueVal) {
-    alert('Название или значение куки не должно быть пустым!');
+  if (!name) {
     return;
   }
 
-  document.cookie = valueName + '=' + valueVal;
+  document.cookie = `${name}=${value}`;
+  cookiesMap.set(name, value);
+
   updateTable();
 });
 
@@ -111,7 +82,51 @@ listTable.addEventListener('click', (e) => {
   const { role, cookieName } = e.target.dataset;
 
   if (role === 'remove-cookie') {
+    cookiesMap.delete(cookieName);
     document.cookie = `${cookieName}=deleted; max-age=0`;
     updateTable();
   }
 });
+
+function updateTable() {
+  const fragment = document.createDocumentFragment();
+  let total = 0;
+
+  listTable.innerHTML = '';
+
+  for (const [name, value] of cookiesMap) {
+    if (
+      filterVal &&
+      !name.toLowerCase().includes(filterVal.toLowerCase()) &&
+      !value.toLowerCase().includes(filterVal.toLowerCase())
+    ) {
+      continue;
+    }
+
+    total++;
+
+    const tr = document.createElement('tr');
+    const tdName = document.createElement('td');
+    const tdValue = document.createElement('td');
+    const tdDelete = document.createElement('td');
+    const buttonDelete = document.createElement('button');
+
+    buttonDelete.dataset.role = 'remove-cookie';
+    buttonDelete.dataset.cookieName = name;
+    buttonDelete.textContent = 'Удалить';
+    tdName.textContent = name;
+    tdValue.textContent = value;
+    tdValue.classList.add('value');
+    tr.append(tdName, tdValue, tdDelete);
+    tdDelete.append(buttonDelete);
+
+    fragment.append(tr);
+  }
+
+  if (total) {
+    listTable.parentNode.classList.remove('hidden');
+    listTable.append(fragment);
+  } else {
+    listTable.parentNode.classList.add('hidden');
+  }
+}
