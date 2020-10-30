@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mega-chat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    html, body, #app, #main {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background: #09101a;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+}
+
+#main {
+  display: flex;
+}
+
+img {
+  content: 'i';
+  width: 120px;
+  position: absolute;
+  height: 100px;
+  height: absolute;
+  top: 14%;
+  left: 40%;
+}
+
+.left-side {
+  flex-grow: 1;
+  max-width: 300px;
+  height: 100vh;
+  background: #17212b;
+  color: #FEFEFD;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-right: 1px;
+}
+
+.user-info {
+  margin-bottom: 20px;
+  display: none;
+  align-items: center;
+}
+
+.user-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/*.user-photo,*/ .message-item-photo, .user-item-photo {
+  margin-right: 15px;
+  background: url(/projects/mega-chat-3/no-photo.png);
+  background-size: cover;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.user-list-header {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.user-list {
+  padding: 5px 0 0 10px;
+  margin-bottom: 30px;
+}
+
+.right-side {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+}
+
+.messages-container {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.input-container {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  background: #17212b;
+}
+
+.message-input {
+  height: 50px;
+  flex-grow: 1;
+  margin: 0 10px 0 0;
+  outline: none;
+  background: #17212b;
+  border: none;
+  padding: 10px;
+  color: #ffff;
+}
+
+.send-button {
+  margin-right: 10px;
+  height: 28px;
+  width: 110px;
+  background: #5288c1;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  line-height: 24px;
+  color: #ffffff;
+  font-weight: 500;
+  outline: none;
+}
+
+.send-button:focus{
+  background: #0869cf;
+}
+
+#login {
+  position: absolute;
+  top: 7vh;
+  width: 500px;
+  height: 300px;
+  background: #17212b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 515px;
+  height: 550px;
+}
+
+.login-field {
+  margin: 15px;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-field input {
+  font-size: 16px;
+  height: 30px;
+  width: 100%;
+  margin-bottom: 30px;
+  padding-left: 10px;
+  outline: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  background: #17212b;
+  border-width: 1px;
+  font-family: "Ubuntu";
+}
+
+.login-field input:last-child{
+  margin-bottom: 0;
+}
+
+
+.login-submit {
+  height: 40px;
+  width: 140px;
+  background: #5288c1;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  line-height: 24px;
+  color: #ffffff;
+  font-weight: 500;
+  outline: none;
+}
+
+.login-submit:active{
+  background: #1364b8;
+}
+
+.login-data-input{
+  color: #ffff;
+  font-size: 16px;
+  line-height: 24px;
+  color: #e5e5e5;
+  font-weight: 300;
+}
+
+.login-data-input:focus{
+  border-color: #5288c1;
+}
+
+.login-name-input{
+  color: #ffff;
+  font-size: 16px;
+  line-height: 24px;
+  color: #e5e5e5;
+  font-weight: 300;
+}
+
+.login-name-input:focus{
+  border-color: #5288c1;
+}
+
+.login-text {
+  font-size: 16px;
+  color: #7f91a4;
+  font-weight: 300;
+  font-family: "Ubuntu";
+  text-align: center;
+  width: 320px;
+}
+.login-title {
+  font-size: 24px;
+  line-height: 24px;
+  color: #ffffff;
+  font-family: "Ubuntu";
+  text-align: center;
+  margin-bottom: 20px;
+}
+.login-close{
+  background:url(#) no-repeat;
+  border: none;
+  width: 20px;
+  height: 20px;
+  margin-bottom: 5px;
+  display: flex;
+  align-self: flex-end;
+  margin-right: 10px;
+}
+
+.login-logo {
+  width: 140px;
+  height: 140px;
+  margin-bottom: 30px;
+}
+
+.message-item,.user-list-item {
+    margin-left: 10px;
+    display: flex;
+    margin-top: 10px;
+}
+
+
+.message-item-system {
+    margin-top: 10px;
+    font-size: 14px;
+    color: gray;
+    padding-left: 10px;
+}
+
+.message-item ~ .message-item {
+    margin-top: 15px;
+}
+
+.message-item-right {
+  flex-grow: 1;
+}
+
+.message-item-header {
+  display: flex;
+  align-items: center;
+}
+
+.message-item-header-name {
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.message-item-header-time {
+  color: gray;
+  font-size: 12px;
+}
+
+.chat {
+  height: 65px;
+  width: 100%;
+  background: #17212b;
+}
+
+.chat__title {
+  font-size: 14px;
+  color: #ffffff;
+  font-family: "Ubuntu";
+  padding: 10px;
+}
+
+.search {
+  height: 25px;
+  flex-grow: 1;
+  width: 195px;
+  margin: 0 10px 0 0;
+  outline: none;
+  background: #242f3d;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  color: #ffff;
+  margin-bottom: 20px;
+}
+.message-item-text {
+    color: #fff;
+}
+
+.message-item-header-name {
+    color: #ffff;
+}
+.upload{
+    top: 50%;
+    padding: 60px 80px;
+    background: #17212b;
+    position: absolute;
+    left: -9999px;
+    transform:translate(-50%, -50%);
+}
+
+.show {
+    left: 50%;
+}
+
+.upload__file {
+    width: 200px;
+    height: 200px;
+    filter: opacity(0);
+    
+}
+
+.upload__text{
+    margin-bottom: 20px;
+}
+.upload__filespace {
+    width: 200px;
+    height: 200px;
+    border: dotted;
+    border-radius: 10px;
+}
+
+.btn-upload{
+    margin-right: 10px;
+    height: 28px;
+    width: 110px;
+    background: #5288c1;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    line-height: 24px;
+    color: #ffffff;
+    font-weight: 500;
+    outline: none;
+    margin-top: 20px;
+}
+
+.btn-upload:last-child{
+    margin-right: 0px;
+}
+
+.btn-upload:focus{
+  border-color: #5288c1;
+}
+
+.upload__file-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button.user-button.button-square {
+  height: 60px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    background-image: url(/projects/mega-chat-3/icon/button.png);
+    outline: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #5288c1;
+}
+
+.chat__number {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #ffffff;
+    font-family: "Ubuntu";
+}
+
+.user-item-right {
+    display: flex;
+    align-items: center;
+}
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div id="app">
+      <div id="login" class="hidden">
+        <button class="login-close"></button>
+        <div class="login-logo"><img src="/projects/mega-chat-3/icon/logo.png"></div>
+        <div class="login-title">Aвторизация</div>
+        <div class="login-text">Введите пожалуйста своё фио и ник для дальнейшей авторизации</div>
+          <div class="login-field">
+            <input type="text" class="login-data-input" data-role="login-data-input" placeholder="Введите ФИО">
+            <input type="text" class="login-name-input" data-role="login-name-input" placeholder="Введите свой ник">
+          </div>
+          <div class="login-field">
+              <button class="login-submit" data-role="login-submit">ВОЙТИ</button>
+          </div>
+          <div class="login-error" data-role="login-error"></div>
+      </div>
+  
+      <div id="main" class="hidden">
+          <div class="left-side">
+              
+              <div class="user-list-container">
+                  <input class="search" data-role="Search" type="text" placeholder="Найти...">
+                  <div class="user-info">
+                    <div class="user-photo" data-role="user-photo"></div>
+                    <div class="user-name" data-role="user-name"></div>
+                  </div>
+    
+                  <div class="user-list" data-role="user-list">
+                  </div>
+                  <div class="user-chat">
+                      <button class="button user-button button-square" data-role="profile">
+                      </button>
+                  </div>
+                  <form class="upload" data-role="upload">
+                    <div class="upload__file-wrap">
+                        <div class="upload__text">Зaгрузить фото</div>
+                        <div class="upload__filespace" data-role="preview">
+                            <input class="upload__file" type="file" name="photo" data-role="file">
+                        </div>
+                    </div>
+                    <button  class="btn-upload" type="submit">Загрузить</button>
+                    <button  class="btn-upload" type="reset" data-role="close">Отмена</button>
+                  </form>
+              </div>
+          </div>
+          <div class="right-side">
+              <div class="chat">
+                <div class="chat__title">Чат</div>
+                <div class="chat__number"></div>
+              </div>
+              <div class="messages-container" data-role="messages-list"></div>
+              <div class="input-container" data-role="message-sender">
+                  <input class="message-input" data-role="message-input" type="text" placeholder="Введите сообщение"/>
+                  <button class="send-button" data-role="message-send-button">Отправить</button>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
